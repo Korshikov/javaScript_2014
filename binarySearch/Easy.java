@@ -22,6 +22,9 @@ public class Easy {
             for (int max : new int[]{5, 4, 2, 1, 0, 10, 100, 1000, Integer.MAX_VALUE / 2}) {
                 for (int i = 0; i < size; i++) {
                     a[i] = random.nextInt(max * 2 + 1) - max;
+                }
+                Arrays.sort(a);
+                for (int i = 0; i < size; i++) {
                     as[i + 1] = Integer.toString(a[i]);
                 }
                 for (int i = 0; i < size; i++) {
