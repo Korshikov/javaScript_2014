@@ -16,10 +16,10 @@ public class Easy {
     public static void main(String[] args) {
         Random random = new Random(3850973259783712434L);
 
-        for (int size : new int[]{5, 4, 2, 1, 0, 10, 100, 1000}) {
+        for (int size : new int[]{5, 4, 2, 1, 0, 10, 100}) {
             int[] a = new int[size];
             String[] as = new String[size + 1];
-            for (int max : new int[]{5, 4, 2, 1, 0, 10, 100, 1000, Integer.MAX_VALUE / 2}) {
+            for (int max : new int[]{5, 4, 2, 1, 0, 10, 100, Integer.MAX_VALUE / 2}) {
                 for (int i = 0; i < size; i++) {
                     a[i] = random.nextInt(max * 2 + 1) - max;
                 }
@@ -48,7 +48,7 @@ public class Easy {
             System.setOut(new PrintStream(out));
             BinarySearch.main(as);
             Scanner in = new Scanner(new ByteArrayInputStream(out.toByteArray()));
-            int expected = Arrays.binarySearch(a, x);
+            int expected = solve(a, x);
             int actual = in.nextInt();
             if (actual != expected) {
                 throw new AssertionError(String.format("Expected %d, found %d", expected, actual));
@@ -58,5 +58,17 @@ public class Easy {
             System.err.println("Error on input " + Arrays.toString(as));
             t.printStackTrace();
         }
+    }
+
+    private static int solve(int[] a, int x) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] == x) {
+                return i;
+            }
+            if (x < a[i]) {
+                return -1 - i;
+            }
+        }
+        return -1 - a.length;
     }
 }
