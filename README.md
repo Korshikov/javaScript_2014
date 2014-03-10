@@ -19,4 +19,11 @@
       * Работа с концом очереди: ``addLast``, ``removeLast``, ``peekLast``
       * Размеры: ``size``, ``isEmpty``
    * [Тесты](ArrayDequeTest.java)
-* [Тесты к простой версии задания](ArrayQueueTest.java)
+* Должена быть реализована FIFO-очередь
+   * Название классов: ``ArrayQuqueSingleton`` (модуль), ``ArrayQuqueADT`` (абстрактный тип данных), ``ArrayQuque`` (обычный класс)
+   * Методы:
+      * Добавление элемента: ``enqueue``
+      * Удаление элемента: ``dequeue``
+      * Просмотр элемента: ``peek``
+      * Размеры: ``size``, ``isEmpty``
+   * [Тесты](ArrayQueueTest.java)
