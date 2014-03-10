@@ -9,7 +9,7 @@ import java.util.Scanner;
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  * @version $$Id$$
  */
-public class Hard {
+public class BinarySearchHard {
     private static int total = 0;
     private static int passed = 0;
 
