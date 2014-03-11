@@ -21,7 +21,7 @@
    * [Тесты](ArrayDequeTest.java)
 * Простая версия
    * Должна быть реализована FIFO-очередь
-   * Название классов: ``ArrayQuqueSingleton`` (модуль), ``ArrayQuqueADT`` (абстрактный тип данных), ``ArrayQuque`` (обычный класс)
+   * Название классов: ``ArrayQueueSingleton`` (модуль), ``ArrayQueueADT`` (абстрактный тип данных), ``ArrayQueue`` (обычный класс)
    * Методы:
       * Добавление элемента: ``enqueue``
       * Удаление элемента: ``dequeue``
