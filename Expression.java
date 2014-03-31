@@ -3,5 +3,5 @@
  * @version $$Id$$
  */
 public interface Expression {
-    double evaluate(double x);
+    int evaluate(int x);
 }
