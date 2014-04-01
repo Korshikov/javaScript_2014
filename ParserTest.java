@@ -102,24 +102,53 @@ public class ParserTest {
                 return 2 * Integer.MAX_VALUE;
             }
         });
-        for (int it = 0; it < 200; it++) {
-            genTest(it / 2 + 2);
+        System.out.println("Testing random tests #1");
+        final int TESTS1 = 2000;
+        for (int it = 0; it < TESTS1; it++) {
+            if (it % 100 == 0) {
+                System.out.println("Completed " + it + " out of " + TESTS1);
+            }
+            genTests1(it / 5 + 2);
         }
-        System.err.println("OK");
+        System.out.println("Testing random tests #2");
+        final int TESTS2 = 777;
+        for (int it = 0; it < TESTS2; it++) {
+            if (it % 100 == 0) {
+                System.out.println("Completed " + it + " out of " + TESTS2);
+            }
+            genTests2(it / 50 + 1);
+        }
+        System.out.println("OK");
     }
 
-    private static void genTest(int depth) {
+    private static void genTests1(int depth) {
         int x = RNG.nextInt();
         int y = RNG.nextInt();
         int z = RNG.nextInt();
         Test test = generate(new int[]{x, y, z}, depth);
-        System.out.println("Testing: " + test.expr);
+        tryTest(x, y, z, test);
+    }
+
+    private static void genTests2(int coefficient) {
+        int x = RNG.nextInt();
+        int y = RNG.nextInt();
+        int z = RNG.nextInt();
+        Test test = Generator.genExpression(1, coefficient, new int[]{x, y, z});
+        tryTest(x, y, z, test);
+    }
+
+    private static void tryTest(int x, int y, int z, Test test) {
         try {
-            int answer = ExpressionParser.parse(test.expr).evaluate(x, y, z);
-            assertTrue(test.answer != null, "division by zero error expected");
-            assertEquals(String.format("f(%d, %d, %d)", x, y, z), answer, test.answer);
-        } catch (ArithmeticException e) {
-            assertTrue(test.answer == null, "no division by zero");
+            try {
+                int answer = ExpressionParser.parse(test.expr).evaluate(x, y, z);
+                assertTrue(test.answer != null, "division by zero error expected");
+                assertEquals(String.format("f(%d, %d, %d)", x, y, z), answer, test.answer);
+            } catch (ArithmeticException e) {
+                assertTrue(test.answer == null, "no division by zero in this expression");
+            }
+        } catch (Throwable e) {
+            System.out.println("Failed test: " + test.expr);
+            throw e;
         }
     }
 
@@ -159,6 +188,66 @@ public class ParserTest {
         }
     }
 
+    static class Generator {
+        static Test genExpression(int depth, int coefficient, int[] vars) {
+            if (makeNewBranch(depth, coefficient)) {
+                Test t1 = genExpression(depth + 1, coefficient, vars);
+                Test t2 = genSummand(depth, coefficient, vars);
+                if (RNG.nextBoolean()) {
+                    return new Test(t1.expr + " + " + t2.expr,
+                            t1.answer == null || t2.answer == null ? null : t1.answer + t2.answer);
+                } else {
+                    return new Test(t1.expr + " - " + t2.expr,
+                            t1.answer == null || t2.answer == null ? null : t1.answer - t2.answer);
+                }
+            } else {
+                return genSummand(depth, coefficient, vars);
+            }
+        }
+
+        static Test genSummand(int depth, int coefficient, int[] vars) {
+            if (makeNewBranch(depth, coefficient)) {
+                Test t1 = genSummand(depth + 1, coefficient, vars);
+                Test t2 = genFactor(depth, coefficient, vars);
+                if (RNG.nextBoolean()) {
+                    return new Test(t1.expr + " * " + t2.expr,
+                            t1.answer == null || t2.answer == null ? null : t1.answer * t2.answer);
+                } else {
+                    return new Test(t1.expr + " / " + t2.expr,
+                            t1.answer == null || t2.answer == null || t2.answer.intValue() == 0 ? null : t1.answer / t2.answer);
+                }
+            } else {
+                return genFactor(depth, coefficient, vars);
+            }
+        }
+
+        static Test genFactor(int depth, int coefficient, int[] vars) {
+            if (makeNewBranch(depth, coefficient)) {
+                Test t = genFactor(depth + 1, coefficient, vars);
+                return new Test("- " + t.expr, t.answer == null ? null : -t.answer);
+            } else {
+                return genValue(depth, coefficient, vars);
+            }
+        }
+
+        static Test genValue(int depth, int coefficient, int[] vars) {
+            if (makeNewBranch(depth, coefficient)) {
+                Test t = genExpression(depth + 1, coefficient, vars);
+                return new Test("( " + t.expr + " )", t.answer == null ? null : t.answer);
+            } else if (RNG.nextBoolean()) {
+                int value = RNG.nextInt();
+                return new Test("" + value, value);
+            } else {
+                int id = RNG.nextInt(3);
+                return new Test("xyz".charAt(id) + "", vars[id]);
+            }
+        }
+
+        static boolean makeNewBranch(int depth, int coefficient) {
+            return RNG.nextInt(depth + coefficient) < coefficient;
+        }
+    }
+
     static class Test {
         String expr;
         Integer answer;
@@ -193,7 +282,7 @@ public class ParserTest {
         boolean assertsEnabled = false;
         assert assertsEnabled = true;
         if (!assertsEnabled) {
-            throw new AssertionError("You should enable assertions by running 'java -ea TripleExpressionTest'");
+            throw new AssertionError("You should enable assertions by running 'java -ea ParserTest'");
         }
     }
 }
