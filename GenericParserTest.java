@@ -2,6 +2,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -307,20 +308,12 @@ public class GenericParserTest {
                     return new Test("abs( " + t.expr + " )", abs(t.answer), type);
                 }
             } else if (RNG.nextBoolean()) {
-                int val = RNG.nextInt();
+                Object z = type == 0 ? RNG.nextInt() : type == 1 ? (RNG.nextDouble() * Math.pow(10, RNG.nextInt(41) - 20)) : randomBigInteger();
                 Object[][] ret = new Object[201][201];
                 for (int i = 0; i <= 200; i++) {
-                    for (int j = 0; j <= 200; j++) {
-                        if (type == 0) {
-                            ret[i][j] = val;
-                        } else if (type == 1) {
-                            ret[i][j] = (double) val;
-                        } else {
-                            ret[i][j] = BigInteger.valueOf(val);
-                        }
-                    }
+                    Arrays.fill(ret[i], z);
                 }
-                return new Test("" + val, ret, type);
+                return new Test("" + (z.toString()), ret, type);
             } else {
                 int id = RNG.nextInt(2);
                 Object[][] ret = new Object[201][201];
@@ -342,6 +335,14 @@ public class GenericParserTest {
 
         boolean makeNewBranch(int depth, int coefficient) {
             return RNG.nextInt(depth + coefficient) < coefficient;
+        }
+
+        static BigInteger randomBigInteger() {
+            StringBuilder sb = new StringBuilder();
+            if (RNG.nextBoolean()) sb.append('-');
+            int len = RNG.nextInt(50) + 1;
+            for (int i = 0; i < len; i++) sb.append(RNG.nextInt(10));
+            return new BigInteger(sb.toString());
         }
     }
 
