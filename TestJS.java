@@ -83,7 +83,7 @@ public class TestJS {
 
     static final int MAXVALUE = 10;
 
-    static boolean testExpression(ScriptEngine engine, Result result, Test test, boolean hard) throws ScriptException {
+    static boolean testExpression(ScriptEngine engine, Result result, Test test, boolean hard) {
         String expr = hard ? ("parse(\"" + test.polish + "\")") : test.expr;
         if (verbose) {
             System.err.println("expr");
