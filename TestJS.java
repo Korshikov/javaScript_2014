@@ -31,7 +31,7 @@ public class TestJS {
     }
 
     static boolean verbose = false;
-    static final String VERSION = "1.0";
+    static final String VERSION = "1.1";
 
     public static void main(String[] args) throws ScriptException, IOException {
         boolean onlyEasy = false;
@@ -88,11 +88,25 @@ public class TestJS {
         if (verbose) {
             System.err.println("expr");
         }
-        engine.eval("expr = " + expr + ";");
+        try {
+            engine.eval("expr = " + expr + ";");
+        } catch (ScriptException e) {
+            System.err.println("Exception happened while evaluating expression:");
+            System.err.println(expr);
+            e.printStackTrace();
+            return false;
+        }
         for (int i = 0; i <= MAXVALUE; i++) {
             for (int j = 0; j <= MAXVALUE; j++) {
                 for (int k = 0; k <= MAXVALUE; k++) {
-                    engine.eval("result.res = expr(" + i + "," + j + "," + k + ");");
+                    try {
+                        engine.eval("result.res = expr(" + i + "," + j + "," + k + ");");
+                    } catch (ScriptException e) {
+                        System.err.println("Exception happened while calculating function:");
+                        System.err.println(expr);
+                        e.printStackTrace();
+                        return false;
+                    }
                     double correct = test.answer[i][j][k];
                     double res = result.res;
                     boolean bad = true;
