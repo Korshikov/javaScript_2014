@@ -1,4 +1,4 @@
-println("=== dump ===");
+/*println("=== dump ===");
 function dump() {
     for (var i = 0; i < arguments.length; i++) {
         println(arguments[i]);
@@ -155,3 +155,79 @@ var compose = function(f, g) {
     }
 }
 println(compose(add(10), add(20))(30));
+*/
+
+var variable = function(variableName){
+    return function(x,y,z){
+        if((variableName=="X")||(variableName=="x")){
+            return x;
+        }
+        if((variableName=="Y")||(variableName=="y")){
+            return y;
+        }
+        if((variableName=="Z")||(variableName=="z")){
+            return z;
+        }
+           
+    }
+}
+
+var cnst = function(constValue){
+    return function(){
+        return constValue;
+    }
+}
+
+var add = function(){
+    var superArguments = arguments;
+    return function(x,y,z){
+        var ret = 0;
+        for(var i=0; i<superArguments.length; i++){
+            ret+= superArguments[i](x,y,z);
+        }
+        return ret;
+    }
+}
+
+var subtract = function(){
+    var superArguments = arguments;
+    return function(x,y,z){
+        var ret = superArguments[0](x,y,z);;
+        for(var i=1; i<superArguments.length; i++){
+            ret-= superArguments[i](x,y,z);
+        }
+        return ret;
+    }
+}
+
+var multiply = function(){
+    var superArguments = arguments;
+    return function(x,y,z){
+        var ret = 1;
+        for(var i=0; i<superArguments.length; i++){
+            ret*= superArguments[i](x,y,z);
+        }
+        return ret;
+    }
+}
+
+var divide = function(){
+    var superArguments = arguments;
+    return function(x,y,z){
+        var ret = superArguments[0](x,y,z);;
+        for(var i=1; i<superArguments.length; i++){
+            ret/= superArguments[i](x,y,z);
+        }
+        return ret;
+    }
+}
+
+var expr = subtract(
+                    multiply(
+                                cnst(2),
+                                variable("x")
+                            ),
+                    cnst(3)
+                    );
+println(expr(5));
+
