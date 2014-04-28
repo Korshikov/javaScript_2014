@@ -138,7 +138,7 @@ public class GenericParserTest {
                         if (x != value) {
                             bad = false;
                         }
-                    } else if (Double.isNaN(x) || Double.isNaN(value)) {
+                    } else if (Double.isNaN(x) || Double.isInfinite(x)) {
 
                     } else if (Math.abs(x - value) / Math.max(1., Math.abs(x)) < 1e-4) {
                         bad = false;
