@@ -69,7 +69,7 @@ public class TestJS {
         }
         if (!onlyEasy) {
             System.err.println("testing hard");
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < TESTS; i++) {
                 System.err.println((i + 1) + " of " + TESTS);
                 if (!testExpression(engine, result, Generator.genExpression(1, i / 20 + 1), true)) {
                     return;
