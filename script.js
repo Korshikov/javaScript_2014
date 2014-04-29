@@ -222,6 +222,36 @@ var divide = function(){
     }
 }
 
+var abs = function(operand){
+    return function(x,y,z){
+        return Math.abs(operand(x,y,z));
+    }
+}
+
+var log = function(operand){
+    return function(x,y,z){
+        return Math.log(operand(x,y,z));
+    }
+}
+
+var parse = function(string){
+    var operands = [];
+    var tockens = string.split("/\s+/g");
+    for (var i = 0; i< tockens.length; i++){
+        switch(tockens[i][0]){
+            case "x":
+            case "X":
+            case "y":
+            case "Y":
+            case "z":
+            case "Z":
+                operand[]=variable(tockens[i])
+            break;
+        }
+    }
+
+}
+
 var expr = subtract(
                     multiply(
                                 cnst(2),
