@@ -31,7 +31,7 @@ public class TestJS {
     }
 
     static boolean verbose = false;
-    static final String VERSION = "1.1";
+    static final String VERSION = "1.2";
 
     public static void main(String[] args) throws ScriptException, IOException {
         boolean onlyEasy = false;
@@ -44,9 +44,9 @@ public class TestJS {
             }
         }
         if (!onlyEasy) {
-            System.err.println("For testing only easy task, use [-easy] parameter");
+            System.out.println("For testing only easy task, use [-easy] parameter");
         } else {
-            System.err.println("Testing only easy task");
+            System.out.println("Testing only easy task");
         }
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
@@ -60,39 +60,43 @@ public class TestJS {
         engine.eval(new InputStreamReader(new FileInputStream("eval.js"), "UTF-8"));
         engine.eval("var expr;");
         final int TESTS = 50;
-        System.err.println("testing easy");
+        System.out.println("testing easy (" + TESTS + " tests)");
         for (int i = 0; i < TESTS; i++) {
-            System.err.println((i + 1) + " of " + TESTS);
+            System.out.print((i + 1) + " ");
             if (!testExpression(engine, result, Generator.genExpression(1, i / 20 + 1), false)) {
                 return;
             }
         }
+        System.out.println();
         if (!onlyEasy) {
-            System.err.println("testing hard");
+            System.out.println("testing hard (" + TESTS + " tests)");
             for (int i = 0; i < TESTS; i++) {
-                System.err.println((i + 1) + " of " + TESTS);
+                System.out.print((i + 1) + " ");
                 if (!testExpression(engine, result, Generator.genExpression(1, i / 20 + 1), true)) {
                     return;
                 }
             }
+            System.out.println();
         } else {
-            System.err.print("only easy ");
+            System.out.print("only easy ");
         }
-        System.err.println("tests passed, version = " + VERSION);
+        System.out.println("tests passed, version = " + VERSION);
     }
 
-    static final int MAXVALUE = 10;
+    static final int MAXVALUE = 8;
 
     static boolean testExpression(ScriptEngine engine, Result result, Test test, boolean hard) {
         String expr = hard ? ("parse(\"" + test.polish + "\")") : test.expr;
         if (verbose) {
-            System.err.println("expr");
+            System.out.println();
+            System.out.println(expr);
         }
         try {
             engine.eval("expr = " + expr + ";");
         } catch (ScriptException e) {
-            System.err.println("Exception happened while evaluating expression:");
-            System.err.println(expr);
+            System.out.println();
+            System.out.println("Exception happened while evaluating expression:");
+            System.out.println(expr);
             e.printStackTrace();
             return false;
         }
@@ -102,8 +106,9 @@ public class TestJS {
                     try {
                         engine.eval("result.res = expr(" + i + "," + j + "," + k + ");");
                     } catch (ScriptException e) {
-                        System.err.println("Exception happened while calculating function:");
-                        System.err.println(expr);
+                        System.out.println();
+                        System.out.println("Exception happened while calculating function:");
+                        System.out.println(expr);
                         e.printStackTrace();
                         return false;
                     }
@@ -126,8 +131,8 @@ public class TestJS {
                         bad = false;
                     }
                     if (bad) {
-                        System.err.println(String.format("expected %f, found %f", correct, res));
-                        System.err.println(String.format("%s(%d,%d,%d)", expr, i, j, k));
+                        System.out.println(String.format("expected %f, found %f", correct, res));
+                        System.out.println(String.format("%s(%d,%d,%d)", expr, i, j, k));
                         return false;
                     }
                 }
@@ -280,7 +285,7 @@ public class TestJS {
                     return new Test("log(" + t.expr + ")", t.polish + " log", log(t.answer));
                 }
             } else if (RNG.nextBoolean()) {
-                int z = RNG.nextInt();
+                int z = Math.abs(RNG.nextInt());
                 double[][][] ret = new double[MAXVALUE + 1][MAXVALUE + 1][MAXVALUE + 1];
                 for (int i = 0; i <= MAXVALUE; i++) {
                     for (int j = 0; j <= MAXVALUE; j++) {
